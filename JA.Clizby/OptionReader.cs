@@ -109,6 +109,10 @@ namespace JA.Clizby
 
                 if (Aliases.ContainsKey(trimmedOption))
                     return option.Replace(trimmedOption, Aliases[trimmedOption]);
+
+                var similarKey = typeof(T).GetProperties().SingleOrDefault(property => property.Name.StartsWith(trimmedOption.Substring(0, 1), StringComparison.OrdinalIgnoreCase));
+                if (similarKey != null)
+                    return option.Replace(trimmedOption, similarKey.Name);
             }
             return option;
         }

@@ -79,6 +79,26 @@ namespace JA.Clizby.Tests
             Assert.Equal(32, options.OptionalValue);
         }
 
+        [Fact]
+        public void Test006_ShorthandArgumentsWork()
+        {
+            var args = new[] { "-n", "Bob" };
+            var options = new OptionReader<Options>().Parse(args);
+
+            Assert.Equal("Bob", options.Name);
+        }
+
+        [Fact]
+        public void Test007_AliasedArgumentsWork()
+        {
+            var args = new[] { "-n", "Bob" };
+            var reader = new OptionReader<Options>();
+            reader.Aliases.Add("n", "name");
+            var options = reader.Parse(args);
+
+            Assert.Equal("Bob", options.Name);
+        }
+
         public class Options
         {
             public string Name { get; set; }

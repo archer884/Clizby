@@ -9,6 +9,8 @@ namespace JA.Clizby
 {
     public class Mapper<T>
     {
+        protected bool _used { get; set; }
+
         public string Name { get; set; }
         public Action<string, T> Transform { get; set; }
         public Func<T, bool> Validator { get; set; }
@@ -20,6 +22,7 @@ namespace JA.Clizby
             Func<T, bool> validator = null,
             bool required = false)
         {
+            _used = false;
             Name = name;
             Transform = transform;
             Validator = validator;
@@ -28,19 +31,21 @@ namespace JA.Clizby
 
         public T Set(string value, T item)
         {
+            _used = true;
             Transform(value, item);
             return item;
         }
 
         public bool Validate(T item)
         {
-            if (!typeof(T).GetProperties().Select(p => p.Name).Contains(Name))
-                throw new ArgumentNullException("Missing property: " + Name);
-
             if (Validator != null)
                 return Validator(item);
 
-            return true;
+            if (Required && !_used)
+                throw new ArgumentNullException(
+                    String.Format("Required property not set: {0}", this.Name));
+
+            return true; // return false if this mapper has not been used at least once
         }
     }
 }
