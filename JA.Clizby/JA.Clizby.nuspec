@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Clizby</id>
+    <version>1.0.0.1</version>
+    <title>Clizby</title>
+    <authors>John M. Archer</authors>
+    <owners>John M. Archer</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Command line parsing library.</description>
+    <releaseNotes>Brand new!</releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>command line, cli, parsing</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\Clizby.dll" target="lib\net45" />
+  </files>
+</package>
