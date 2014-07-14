@@ -45,7 +45,7 @@ namespace JA.Clizby
                 throw new ArgumentNullException(
                     String.Format("Required property not set: {0}", this.Name));
 
-            return true; // return false if this mapper has not been used at least once
+            return true;
         }
     }
 }
