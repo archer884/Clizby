@@ -97,11 +97,40 @@ namespace JA.Clizby.Tests
             Assert.Equal("Bob", options.Name);
         }
 
+        [Fact]
+        public void Test008_CustomMapperClassesWork()
+        {
+            var args = new[] { "-n", "Bob" };
+            var options = new OptionReader<Options>(new OptionsCustomNameMapper()).Parse(args);
+
+            Assert.Equal(OptionsCustomNameMapper.CorrectName, options.Name);
+        }
+
         public class Options
         {
             public string Name { get; set; }
             public bool TrueFalse { get; set; }
             public int OptionalValue { get; set; }
+        }
+
+        public class OptionsCustomNameMapper : IMapper<Options>
+        {
+            public const string CorrectName = "Maximus Hardcorion!"; // pronounced "hard-core-ee-on"; the exclamation point is silent
+
+            public string Name
+            {
+                get { return "Name"; }
+            }
+
+            public void Set(Options target, string value)
+            {
+                target.Name = "Maximus Hardcorion!";
+            }
+
+            public bool Validate(Options target)
+            {
+                return target.Name == "Maximus Hardcorion!";
+            }
         }
     }
 }

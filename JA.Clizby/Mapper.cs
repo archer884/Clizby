@@ -12,7 +12,7 @@ namespace JA.Clizby
     public interface IMapper<T>
     {
         string Name { get; }
-        void Set<T>(T target, string value);
+        void Set(T target, string value);
         bool Validate(T target);
     }
 
@@ -48,7 +48,7 @@ namespace JA.Clizby
             _hasBeenSet = false;
         }
 
-        public void Set<T>(T target, string value)
+        public void Set(T target, string value)
         {
             Property.SetValue(target, 
                 Transform == null ? TypeDescriptor.GetConverter(typeof(TProperty)).ConvertFromString(value) : Transform(value));
