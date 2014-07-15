@@ -12,20 +12,28 @@ namespace JA.Clizby
     public class OptionReader<T> where T : new()
     {
         public IDictionary<string, string> Aliases { get; set; }
-        public IDictionary<string, Mapper<T>> Mappers { get; set; }
+        public IDictionary<string, IMapper<T>> Mappers { get; set; }
         public IDictionary<string, PropertyInfo> Properties { get; set; }
 
         public OptionReader()
         {
             Aliases = new Dictionary<string, string>();
-            Mappers = new Dictionary<string, Mapper<T>>();
+            Mappers = new Dictionary<string, IMapper<T>>();
         }
 
         /// <summary>
         /// Creates a new OptionReader the provided mappers.
         /// </summary>
-        /// <param name="mappers"></param>
-        public OptionReader(IEnumerable<Mapper<T>> mappers)
+        public OptionReader(IEnumerable<IMapper<T>> mappers)
+            : this()
+        {
+            Mappers = mappers.ToDictionary(m => m.Name);
+        }
+
+        /// <summary>
+        /// Creates a new OptionReader the provided mappers.
+        /// </summary>
+        public OptionReader(params IMapper<T>[] mappers)
             : this()
         {
             Mappers = mappers.ToDictionary(m => m.Name);
@@ -46,23 +54,23 @@ namespace JA.Clizby
             var setProperty = false;
             var propertyName = (string)null;
 
-            foreach (var item in argsCollection.Select(GetOptionMapping))
+            foreach (var value in argsCollection.Select(GetOptionMapping))
             {
                 if (setProperty && properties.ContainsKey(propertyName))
                 {
-                    if (Mappers.ContainsKey(propertyName)) 
-                        options = Mappers[propertyName].Set(item, options);
+                    if (Mappers.ContainsKey(propertyName))
+                        Mappers[propertyName].Set(options, value);
 
-                    else properties[propertyName].SetValue(options, TypeDescriptor.GetConverter(properties[propertyName].PropertyType).ConvertFromString(item));
+                    else properties[propertyName].SetValue(options, TypeDescriptor.GetConverter(properties[propertyName].PropertyType).ConvertFromString(value));
 
                     setProperty = false;
                     continue;
                 }
 
-                if (item.StartsWith("-") || item.StartsWith("/"))
+                if (value.StartsWith("-") || value.StartsWith("/"))
                 {
                     setProperty = true;
-                    propertyName = GetPropertyName(item);
+                    propertyName = GetPropertyName(value);
 
                     // If the next thing to come up is FALSE, this will be reset
                     if (properties[propertyName].PropertyType == typeof(bool))
@@ -83,7 +91,7 @@ namespace JA.Clizby
             for (int i = 0; i < positionalArguments.Count; i++)
             {
                 if (Mappers.ContainsKey(positionalProperties[i].Name))
-                    options = Mappers[positionalProperties[i].Name].Set(positionalArguments[i], options);
+                    Mappers[positionalProperties[i].Name].Set(options, positionalArguments[i]);
 
                 else positionalProperties[i].SetValue(options, TypeDescriptor.GetConverter(positionalProperties[i].PropertyType).ConvertFromString(positionalArguments[i]));
             }

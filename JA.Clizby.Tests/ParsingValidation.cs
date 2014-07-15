@@ -21,13 +21,13 @@ namespace JA.Clizby.Tests
         public void Test002_AdvancedGenericParsing()
         {
             var args = new[] { "/name", "Bob", "--trueFalse", "false" };
-            var nameMapper = new Mapper<Options>("Name", required: true)
+            var nameMapper = new Mapper<Options, string>(o => o.Name, required: true)
             {
-                Transform = (value, item) => item.Name = value.ToUpper(),
-                Validator = item => !string.IsNullOrWhiteSpace(item.Name),
+                Transform = value => value.ToUpper(),
+                Validator = value => !String.IsNullOrWhiteSpace(value),
             };
 
-            var reader = new OptionReader<Options>(new[] { nameMapper });
+            var reader = new OptionReader<Options>(nameMapper);
             var options = reader.Parse(args);
 
             Assert.Equal("BOB", options.Name);
@@ -37,10 +37,10 @@ namespace JA.Clizby.Tests
         [Fact]
         public void Test003_MissingRequiredPropertyThrowsError()
         {
-            var args = new[] { "/name", "Bob", "--trueFalse", "false" };
-            var dateMapper = new Mapper<Options>("Date", required: true);
+            var args = new[] { "/name", "Bob" };
+            var booleanMapper = new Mapper<Options, bool>(o => o.TrueFalse, required: true);
 
-            var reader = new OptionReader<Options>(new[] { dateMapper });
+            var reader = new OptionReader<Options>(booleanMapper);
 
             Assert.Throws<ArgumentNullException>(() =>
             {
@@ -62,16 +62,14 @@ namespace JA.Clizby.Tests
         public void Test005_AdvancedPositionalArgumentsWork()
         {
             var args = new[] { "Bob", "false", "--optionalValue", "16" };
-            var nameCapitalizer = new Mapper<Options>("Name", required: true, transform: (i, o) => o.Name = i.ToUpper());
-            var boolInverter = new Mapper<Options>("TrueFalse", required: true, transform: (i, o) => o.TrueFalse = !bool.Parse(i));
-            var optionDoubler = new Mapper<Options>("OptionalValue", required: false, transform: (i, o) => o.OptionalValue = int.Parse(i) * 2);
+            var nameCapitalizer = new Mapper<Options, string>(o => o.Name, required: true, transform: value => value.ToUpper());
+            var boolInverter = new Mapper<Options, bool>(o => o.TrueFalse, required: true, transform: value => !bool.Parse(value));
+            var optionDoubler = new Mapper<Options, int>(o => o.OptionalValue, required: false, transform: value => int.Parse(value) * 2);
 
-            var options = new OptionReader<Options>(new[] 
-            { 
+            var options = new OptionReader<Options>(
                 nameCapitalizer, 
                 boolInverter, 
-                optionDoubler,
-            }).Parse(args);
+                optionDoubler).Parse(args);
             
             Assert.NotEqual("Bob", options.Name);
             Assert.Equal("BOB", options.Name);
