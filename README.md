@@ -52,7 +52,7 @@ Clizby uses a strongly-typed, generic Parse(T) method to do most of its magic. R
 Just as an arbitrary example, what if you want your users to type `false` as an argument (for better comprehension), but your application (because you're insane) will only understand values of `0` or `1`?
 
     var boolConverter = new Mapper<Options, bool>(
-        "BooleanFlag", 
+        options => options.BooleanFlag, 
         value => bool.Parse(value) ? 1 : 0);
         
     var options = new OptionReader<Options>(boolConverter).Parse(args);
