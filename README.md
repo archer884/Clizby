@@ -12,7 +12,7 @@ Also available from Nuget: https://www.nuget.org/packages/Clizby
     - Modified the built-in mapper class so that it now asks you to provide a selector expression instead of simply the name of a property (which is just honestly way cooler, in my opinion).
     - Changed transform and validation functions used by the provided mapper class so that they accept function rather than action delegates (because that just feels cleaner to me).
 
-> These last two are breaking changes. Sorry. No way around that.
+> Note: Those last two above were breaking changes. Sorry. No way around that. :(
 
 - Version 1.0.0.1: Finally got the nuget package working (and tested it on one of my own projects). Pretty cool, huh?
 
@@ -52,10 +52,12 @@ Clizby uses a strongly-typed, generic Parse(T) method to do most of its magic. R
 Just as an arbitrary example, what if you want your users to type `false` as an argument (for better comprehension), but your application (because you're insane) will only understand values of `0` or `1`?
 
     var boolConverter = new Mapper<Options, bool>(
-        "BooleanFlag", 
+        options => options.BooleanFlag, 
         value => bool.Parse(value) ? 1 : 0);
         
     var options = new OptionReader<Options>(boolConverter).Parse(args);
+    
+> Note: If you look in the tests I've uploaded here, you'll see me using named arguments to create these mappers. That isn't required; the order is "property selector", "transform", "validator", "required", and you can just stick them in order, but--honestly--it's a little easier to maintain if you have them labeled, isn't it?
 
 In this sample, we create a new Mapper, an object used by Clizby to map command line arguments to values on the output object. The Mapper object has other uses (the most basic being that of marking a given property as required), but in this case we use it to transform a boolean value into an integer by means of a lambda.
 
