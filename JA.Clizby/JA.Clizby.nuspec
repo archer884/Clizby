@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Clizby</id>
-    <version>1.0.0.2</version>
+    <version>1.0.0.3</version>
     <title>Clizby</title>
     <authors>John M. Archer</authors>
     <owners>John M. Archer</owners>
@@ -10,7 +10,7 @@
     <description>Command line parsing library emphasizing simple configuration as well as versatility and power.</description>
     <summary>Simple, powerful command line parsing library</summary>
     <projectUrl>https://github.com/archer884/Clizby</projectUrl>
-    <releaseNotes>Fixed bug in required properties. My apologies for how it worked (or didn't work, that is) before.</releaseNotes>
+    <releaseNotes>Moved tests to second project to clean up nuget package.</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>command line, cli, parsing</tags>
   </metadata>
