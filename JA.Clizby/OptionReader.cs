@@ -21,6 +21,10 @@ namespace JA.Clizby
             Mappers = new Dictionary<string, Mapper<T>>();
         }
 
+        /// <summary>
+        /// Creates a new OptionReader the provided mappers.
+        /// </summary>
+        /// <param name="mappers"></param>
         public OptionReader(IEnumerable<Mapper<T>> mappers)
             : this()
         {
