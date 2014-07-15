@@ -12,7 +12,7 @@ Also available from Nuget: https://www.nuget.org/packages/Clizby
     - Modified the built-in mapper class so that it now asks you to provide a selector expression instead of simply the name of a property (which is just honestly way cooler, in my opinion).
     - Changed transform and validation functions used by the provided mapper class so that they accept function rather than action delegates (because that just feels cleaner to me).
 
-> These last two are breaking changes. Sorry. No way around that.
+> Note: Those last two above were breaking changes. Sorry. No way around that. :(
 
 - Version 1.0.0.1: Finally got the nuget package working (and tested it on one of my own projects). Pretty cool, huh?
 
