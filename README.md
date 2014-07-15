@@ -4,6 +4,16 @@ Clizby is all about easily-configured command-line argument parsing (and pretty 
 
 Also available from Nuget: https://www.nuget.org/packages/Clizby
 
+- Version 1.0.1.1: Lots of changes for this and other earlier versions. I can't remember them all (probably), so here are the highlights...
+    - Fixed nuget package so that it no longer makes you download a pointless testing library.
+    - Added new constructor to make creating OptionReaders with mappers a little less annoying.
+    - Added IMapper(T) interface so that you can use a totally custom mapper class if you want.
+    - Fixed/update documentation on advanced usage (the tests were right, but the example in this document was wack!).
+    - Modified the built-in mapper class so that it now asks you to provide a selector expression instead of simply the name of a property (which is just honestly way cooler, in my opinion).
+    - Changed transform and validation functions used by the provided mapper class so that they accept function rather than action delegates (because that just feels cleaner to me).
+
+> These last two are breaking changes. Sorry. No way around that.
+
 - Version 1.0.0.1: Finally got the nuget package working (and tested it on one of my own projects). Pretty cool, huh?
 
 ## Usage ##
@@ -41,20 +51,16 @@ Clizby uses a strongly-typed, generic Parse(T) method to do most of its magic. R
 
 Just as an arbitrary example, what if you want your users to type `false` as an argument (for better comprehension), but your application (because you're insane) will only understand values of `0` or `1`?
 
-    var falseConverter = new Mapper<Options>(
+    var boolConverter = new Mapper<Options, bool>(
         "BooleanFlag", 
-        (input, options) => bool.Parse(input) ? 1 : 0);
+        value => bool.Parse(value) ? 1 : 0);
         
-    var options = new OptionReader<Options>(new[]
-    {
-        falseConverter
-    }).Parse(args);
+    var options = new OptionReader<Options>(boolConverter).Parse(args);
 
 In this sample, we create a new Mapper, an object used by Clizby to map command line arguments to values on the output object. The Mapper object has other uses (the most basic being that of marking a given property as required), but in this case we use it to transform a boolean value into an integer by means of a lambda.
 
 ## Roadmap ##
 Clizby is, at least for my purposes, functionally complete (you'll notice that I totally gave it the version number 1.0 already). It's actually even being used right in some of my own projects (Nuget makes that a lot easier. :) ) But that doesn't mean I'm *quite* finished yet. My future plans include...
 
-- Interfaces. Why should you have to use my perfectly good objects when you can make your own?
+- Moar interfaces. Why should you use my objects when you can spend a lot of time making your own?
 - Better handling for aliases and shorthand property names. Currently, these are... Slightly more case-sensitive than other property names.
-- Maaaaaybe I'll revisit the way Clizby uses Mapper(T), which (I think) is currently a little clunky. 
