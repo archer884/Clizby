@@ -7,8 +7,10 @@
     <authors>John M. Archer</authors>
     <owners>John M. Archer</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Command line parsing library.</description>
-    <releaseNotes>Brand new!</releaseNotes>
+    <description>Command line parsing library emphasizing simple configuration as well as versatility and power.</description>
+    <summary>Simple, powerful command line parsing library</summary>
+    <projectUrl>https://github.com/archer884/Clizby</projectUrl>
+    <releaseNotes>Fixed bug in required properties. My apologies for how it worked (or didn't work, that is) before.</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>command line, cli, parsing</tags>
   </metadata>

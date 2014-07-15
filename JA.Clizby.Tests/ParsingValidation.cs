@@ -3,7 +3,7 @@ using Xunit;
 
 namespace JA.Clizby.Tests
 {
-    public class ValidationTests
+    public class ParsingValidation
     {
         [Fact]
         public void Test001_BasicGenericParsing()

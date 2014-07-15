@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D63D2753-C90A-4E97-AFE0-1FA91FB4925F}</ProjectGuid>
+    <ProjectGuid>{65F12EE0-5B4D-4254-9752-12EC5EEDD943}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JA.Clizby</RootNamespace>
-    <AssemblyName>Clizby</AssemblyName>
+    <RootNamespace>JA.Clizby.Tests</RootNamespace>
+    <AssemblyName>JA.Clizby.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>5b9e50e0</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>13a12ebb</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,11 +38,22 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OptionReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Mapper.cs" />
+    <Compile Include="ParsingValidation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JA.Clizby\JA.Clizby.csproj">
+      <Project>{d63d2753-c90a-4e97-afe0-1fa91fb4925f}</Project>
+      <Name>JA.Clizby</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
