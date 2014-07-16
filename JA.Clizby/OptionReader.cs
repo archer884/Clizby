@@ -101,8 +101,16 @@ namespace JA.Clizby
 
         private T Validate(T options)
         {
-            if (Mappers.Values.Any(m => m.Validate(options) == false))
-                throw new ArgumentException();
+            var validationResults = Mappers.Values.Select(mapper => new
+            {
+                Mapper = mapper.Name,
+                Result = mapper.Validate(options),
+            }).ToList();
+
+            if (validationResults.Any(mapper => !mapper.Result))
+                throw new ArgumentException(
+                    String.Format("The following mapper(s) failed to validate: \n{0}",
+                        String.Join(Environment.NewLine, validationResults.Select(result => result.Mapper))));
 
             return options;
         }

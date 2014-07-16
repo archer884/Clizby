@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Xunit;
 
 namespace JA.Clizby.Tests
@@ -106,6 +107,24 @@ namespace JA.Clizby.Tests
             Assert.Equal(OptionsCustomNameMapper.CorrectName, options.Name);
         }
 
+        [Fact]
+        public void Test009_ValidationFailuresPropogate()
+        {
+            var args = new[] { "-n", "Bob" };
+            
+            var exception = Assert.Throws<ArgumentException>(() =>
+            {
+                var options = new OptionReader<Options>(new Mapper<Options, string>(
+                    o => o.Name,
+                    value => value.ToUpper(),
+                    value => value.Length > 3,
+                    true)).Parse(args);
+            });
+
+            Debug.WriteLine(exception.Message);
+        }
+
+        #region Classes
         public class Options
         {
             public string Name { get; set; }
@@ -131,6 +150,7 @@ namespace JA.Clizby.Tests
             {
                 return target.Name == "Maximus Hardcorion!";
             }
-        }
+        } 
+        #endregion
     }
 }
