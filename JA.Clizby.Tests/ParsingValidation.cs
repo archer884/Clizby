@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Xunit;
 
 namespace JA.Clizby.Tests
@@ -124,6 +126,48 @@ namespace JA.Clizby.Tests
             Debug.WriteLine(exception.Message);
         }
 
+        [Fact]
+        public void Test010_EnumerableArgumentsWork()
+        {
+            var args = new[] { "-n", "Max", "-n", "Tom", "-greet" };
+            var options = new OptionReader<HelloWorldOptions>(new HelloWorldOptionsCustomNameMapper())
+            {
+                Aliases = new Dictionary<string, string>() 
+                { 
+                    { "name", "names" },
+                    { "n", "names" },
+                }
+            }.Parse(args);
+
+            Assert.Equal(2, options.Names.Count());
+            Assert.Equal("Max", options.Names.First());
+            Assert.Equal("Tom", options.Names.Last());
+            Assert.True(options.Greet);
+        }
+
+        [Fact]
+        public void Test011_BooleanArgumentsFollowedByArgumentTokensWork()
+        {
+            var args = new[] { "-n", "Max", "-name", "Tom", "-greet", "-names", "Bob" };
+            HelloWorldOptions options = null;
+
+            Assert.DoesNotThrow(() =>
+            {
+                options = new OptionReader<HelloWorldOptions>(new HelloWorldOptionsCustomNameMapper())
+                {
+                    Aliases = new Dictionary<string, string>() 
+                { 
+                    { "name", "names" },
+                    { "n", "names" },
+                }
+                }.Parse(args);
+            });
+
+            Assert.Equal(3, options.Names.Count());
+            Assert.True(new[] { "Max", "Tom", "Bob" }.SequenceEqual(options.Names));
+            Assert.True(options.Greet);
+        }
+
         #region Classes
         public class Options
         {
@@ -150,7 +194,34 @@ namespace JA.Clizby.Tests
             {
                 return target.Name == "Maximus Hardcorion!";
             }
-        } 
+        }
+
+        public class HelloWorldOptions
+        {
+            public IEnumerable<string> Names { get; set; }
+            public bool Greet { get; set; }
+        }
+
+        public class HelloWorldOptionsCustomNameMapper : IMapper<HelloWorldOptions>
+        {
+            private IList<string> _names = new List<string>();
+
+            public string Name { get { return "Names"; } }
+
+            public void Set(HelloWorldOptions target, string value)
+            {
+                if (target.Names == null)
+                    target.Names = _names;
+
+                _names.Add(value);
+            }
+
+            public bool Validate(HelloWorldOptions target)
+            {
+                return target.Names != null
+                    && target.Names.Any();
+            }
+        }
         #endregion
     }
 }

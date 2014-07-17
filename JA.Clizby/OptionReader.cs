@@ -54,19 +54,9 @@ namespace JA.Clizby
             var setProperty = false;
             var propertyName = (string)null;
 
+            // handle single properties
             foreach (var value in argsCollection.Select(GetOptionMapping))
             {
-                if (setProperty && properties.ContainsKey(propertyName))
-                {
-                    if (Mappers.ContainsKey(propertyName))
-                        Mappers[propertyName].Set(options, value);
-
-                    else properties[propertyName].SetValue(options, TypeDescriptor.GetConverter(properties[propertyName].PropertyType).ConvertFromString(value));
-
-                    setProperty = false;
-                    continue;
-                }
-
                 if (value.StartsWith("-") || value.StartsWith("/"))
                 {
                     setProperty = true;
@@ -76,6 +66,17 @@ namespace JA.Clizby
                     if (properties[propertyName].PropertyType == typeof(bool))
                         properties[propertyName].SetValue(options, true);
 
+                    continue;
+                }
+
+                if (setProperty && properties.ContainsKey(propertyName))
+                {
+                    if (Mappers.ContainsKey(propertyName))
+                        Mappers[propertyName].Set(options, value);
+
+                    else properties[propertyName].SetValue(options, TypeDescriptor.GetConverter(properties[propertyName].PropertyType).ConvertFromString(value));
+
+                    setProperty = false;
                     continue;
                 }
             }
@@ -125,7 +126,7 @@ namespace JA.Clizby
         {
             if (option.StartsWith("-") || option.StartsWith("/"))
             {
-                var trimmedOption = option.TrimStart(new[] { '-', '/' });
+                var trimmedOption = option.TrimStart('-', '/');
 
                 if (Aliases.ContainsKey(trimmedOption))
                     return option.Replace(trimmedOption, Aliases[trimmedOption]);

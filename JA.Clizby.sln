@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JA.Clizby.Tests", "JA.Clizb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeInChina", "TimeInChina\TimeInChina.csproj", "{929D5EDD-D7C5-4B2C-9B7B-6DA55F99DC21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloGuys", "HelloGuys\HelloGuys.csproj", "{2D303AC2-2AF2-4FEB-AD92-DC7876D4A7C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{929D5EDD-D7C5-4B2C-9B7B-6DA55F99DC21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{929D5EDD-D7C5-4B2C-9B7B-6DA55F99DC21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{929D5EDD-D7C5-4B2C-9B7B-6DA55F99DC21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D303AC2-2AF2-4FEB-AD92-DC7876D4A7C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D303AC2-2AF2-4FEB-AD92-DC7876D4A7C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D303AC2-2AF2-4FEB-AD92-DC7876D4A7C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D303AC2-2AF2-4FEB-AD92-DC7876D4A7C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
