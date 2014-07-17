@@ -49,6 +49,8 @@ For a clearer picture of what is supported, you can take a peek at the test suit
 
 Clizby uses a strongly-typed, generic Parse(T) method to do most of its magic. Reflection allows us to see the name and type of each property. We then use a default type converter to transform text into data in order to build up an options object. This works pretty well in a lot of circumstances, but it is also possible to do additional processing on inputs before using them.
 
+### Argument Processing ###
+
 Just as an arbitrary example, what if you want your users to type `false` as an argument (for better comprehension), but your application (because you're insane) will only understand values of `0` or `1`?
 
     var boolConverter = new Mapper<Options, bool>(
@@ -60,6 +62,35 @@ Just as an arbitrary example, what if you want your users to type `false` as an 
 > Note: If you look in the tests I've uploaded here, you'll see me using named arguments to create these mappers. That isn't required; the order is "property selector", "transform", "validator", "required", and you can just stick them in order, but--honestly--it's a little easier to maintain if you have them labeled, isn't it?
 
 In this sample, we create a new Mapper, an object used by Clizby to map command line arguments to values on the output object. The Mapper object has other uses (the most basic being that of marking a given property as required), but in this case we use it to transform a boolean value into an integer by means of a lambda.
+
+### Enumerable Arguments ###
+
+The majority of my use cases involve single options and flags, but I do have one project that requires me to call an application like so: `app.exe -arg value1 -arg value2 -arg value3`, which is a use case that--at first blush--Clizby does not seem to support. Now, it *is* true that Clizby doesn't have a built-in mapper type for enumerable arguments, but I'm still using Clizby to handle this effort at work by creating a mapper class to handle the appropriate properties. 
+
+This class is taken from the HelloGuys sample project you can view on this repository:
+
+    class ConfigNameMapper : IMapper<Config>
+    {
+        private IList<string> _names = new List<string>();
+
+        public string Name { get { return "Names"; } }
+        
+        public void Set(Config target, string value)
+        {
+            if (target.Names == null)
+                target.Names = _names;
+
+            _names.Add(value);
+        }
+
+        public bool Validate(Config target)
+        {
+            return target.Names != null
+                && target.Names.Any();
+        }
+    }
+    
+It's a pretty simple class: the only thing it contains other than the bare minimum required to implement the IMapper(T) interface is the `IList(T) _names`, which it uses to store all the names that come through as arguments when the arguments are being read. `_names` is then set as the backing store for the `.Names` property on the `Config` object. This pattern saved me at last a couple hours vs. trying to add the same functionality into the base `OptionReader(T)`. :)
 
 ## Roadmap ##
 Clizby is, at least for my purposes, functionally complete (you'll notice that I totally gave it the version number 1.0 already). It's actually even being used right in some of my own projects (Nuget makes that a lot easier. :) ) But that doesn't mean I'm *quite* finished yet. My future plans include...
