@@ -2,7 +2,11 @@ Clizby
 ======
 Clizby is all about easily-configured command-line argument parsing (and pretty much nothing else). Although I guess it's also about Psych, which was an awesome show that you should watch sometime. Bonus points if you already know who Clizby is.
 
-Also available from Nuget: https://www.nuget.org/packages/Clizby
+Stable builds are [available on Nuget](https://www.nuget.org/packages/Clizby), but the latest version is always right here.
+
+- Version 1.0.2: Added an attribute called Alias that you can stick on your fields and properties in order to avoid my (heinous) Alias api.
+    - You know, the one that consisted basically of creating a dictionary where the keys were aliases and all the values were the same damn property name?
+    - To be honest, it still works that way internally, but the OptionReader(T) is now perfectly capable of building its own dictionary.
 
 - Version 1.0.1.1: Lots of changes for this and other earlier versions. I can't remember them all (probably), so here are the highlights...
     - Fixed nuget package so that it no longer makes you download a pointless testing library.
@@ -30,14 +34,17 @@ To get the most out of Clizby, create a simple POCO containing your command line
 
     public class Options
     {
+        [Alias("Nombre")]
         public int Name { get; set; }
+        
+        [Alias("Greet", "Salutate")]
         public bool SayHello { get; set; }
     }
     
 ...then when you actually run the app, any of the following will work fine:
 
-- `app.exe -Name John -SayHello` or `app.exe -Name John -SayHello true`
-- `app.exe -Name John -SayHello false`
+- `app.exe -Name John -SayHello` or `app.exe -Name John -Greet true`
+- `app.exe -Nombre John -Salutate false`
 - `app.exe John true` or `app.exe John false`
 - `app.exe John -SayHello false`
 
@@ -96,4 +103,12 @@ It's a pretty simple class: the only thing it contains other than the bare minim
 Clizby is, at least for my purposes, functionally complete (you'll notice that I totally gave it the version number 1.0 already). It's actually even being used right in some of my own projects (Nuget makes that a lot easier. :) ) But that doesn't mean I'm *quite* finished yet. My future plans include...
 
 - Moar interfaces. Why should you use my objects when you can spend a lot of time making your own?
+    - I'm totally serious about this: I feel like a good concept for an IEnumerableMapper(T) has begun to take shape and that will probably be my next update.
+
 - Better handling for aliases and shorthand property names. Currently, these are... Slightly more case-sensitive than other property names.
+    - Still looking into this. The Alias property itself is part one of my solution for this, but I need to do a little more research around "case sensitive."
+
+> ### Parting thoughts ###
+> This is still a personal project and pretty much 100% of all development on it is driven by dogfooding. Of course, my needs are limited to things that *I* want to do, so if there's something missing and you just can't believe I haven't added it yet, feel free to tell me. :)
+>
+> Also, for an example of some heavy dogfooding, check out [HashServer](https://github.com/archer884/HashServer), a project designed to help me stop wasting room on my file server (and, apparently, as a test of just how far I can push Clizby's design without totally screwing everything up).
