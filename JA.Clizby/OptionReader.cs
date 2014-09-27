@@ -17,8 +17,10 @@ namespace JA.Clizby
 
         public OptionReader()
         {
-            Aliases = new Dictionary<string, string>();
             Mappers = new Dictionary<string, IMapper<T>>();
+            Aliases = typeof(T).GetFields().Where(f => f.GetCustomAttribute(typeof(Alias)) != null).SelectMany(f => ((Alias)f.GetCustomAttribute(typeof(Alias))).Names.Select(n => new { Key = n, Value = f.Name }))
+                .Concat(typeof(T).GetProperties().Where(p => p.GetCustomAttribute(typeof(Alias)) != null).SelectMany(p => ((Alias)p.GetCustomAttribute(typeof(Alias))).Names.Select(n => new { Key = n, Value = p.Name })))
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
         }
 
         /// <summary>

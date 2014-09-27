@@ -156,13 +156,31 @@ namespace JA.Clizby.Tests
                 options = new OptionReader<HelloWorldOptions>(new HelloWorldOptionsCustomNameMapper())
                 {
                     Aliases = new Dictionary<string, string>() 
-                { 
-                    { "name", "names" },
-                    { "n", "names" },
-                }
+                    { 
+                        { "name", "names" },
+                        { "n", "names" },
+                    }
                 }.Parse(args);
             });
 
+            Assert.Equal(3, options.Names.Count());
+            Assert.True(new[] { "Max", "Tom", "Bob" }.SequenceEqual(options.Names));
+            Assert.True(options.Greet);
+        }
+
+        [Fact]
+        public void Test012_OptionsAliasesWork()
+        {
+            var args = new[] { "-n", "Max", "-name", "Tom", "-groot", "-names", "Bob" };
+            HelloWorldOptionsWithAliases options = null;
+            OptionReader<HelloWorldOptionsWithAliases> reader = new OptionReader<HelloWorldOptionsWithAliases>(new HelloWorldOptionsWithAliasesCustomNameMapper());
+
+            Assert.DoesNotThrow(() =>
+            {
+                options = reader.Parse(args);
+            });
+
+            Assert.Equal(3, reader.Aliases.Count);
             Assert.Equal(3, options.Names.Count());
             Assert.True(new[] { "Max", "Tom", "Bob" }.SequenceEqual(options.Names));
             Assert.True(options.Greet);
@@ -198,8 +216,8 @@ namespace JA.Clizby.Tests
 
         public class HelloWorldOptions
         {
-            public IEnumerable<string> Names { get; set; }
-            public bool Greet { get; set; }
+            public virtual IEnumerable<string> Names { get; set; }
+            public virtual bool Greet { get; set; }
         }
 
         public class HelloWorldOptionsCustomNameMapper : IMapper<HelloWorldOptions>
@@ -217,6 +235,36 @@ namespace JA.Clizby.Tests
             }
 
             public bool Validate(HelloWorldOptions target)
+            {
+                return target.Names != null
+                    && target.Names.Any();
+            }
+        }
+
+        public class HelloWorldOptionsWithAliases
+        {
+            [Alias("name", "n")]
+            public IEnumerable<string> Names { get; set; }
+
+            [Alias("Groot")]
+            public bool Greet { get; set; }
+        }
+
+        public class HelloWorldOptionsWithAliasesCustomNameMapper : IMapper<HelloWorldOptionsWithAliases>
+        {
+            private IList<string> _names = new List<string>();
+
+            public string Name { get { return "Names"; } }
+
+            public void Set(HelloWorldOptionsWithAliases target, string value)
+            {
+                if (target.Names == null)
+                    target.Names = _names;
+
+                _names.Add(value);
+            }
+
+            public bool Validate(HelloWorldOptionsWithAliases target)
             {
                 return target.Names != null
                     && target.Names.Any();
