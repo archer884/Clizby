@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Dynamic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JA.Clizby
 {
@@ -53,33 +50,21 @@ namespace JA.Clizby
             var properties = typeof(T).GetProperties().ToDictionary(p => p.Name);
             var options = ApplyPositionalArguments(new T(), argsCollection);
 
-            var setProperty = false;
-            var propertyName = (string)null;
+            var parameters = argsCollection
+                .Zip(argsCollection.Skip(1).Concat(new[] { String.Empty }), (a, b) => new { a, b })
+                .Where(pair => pair.a.StartsWith("-") || pair.a.StartsWith("/"))
+                .Select(pair => new Parameter(GetOptionMapping(pair.a), pair.b));
 
-            // handle single properties
-            foreach (var value in argsCollection.Select(GetOptionMapping))
+            foreach (var parameter in parameters)
             {
-                if (value.StartsWith("-") || value.StartsWith("/"))
-                {
-                    setProperty = true;
-                    propertyName = GetPropertyName(value);
+                var propertyName = GetPropertyName(parameter.Key);
 
-                    // If the next thing to come up is FALSE, this will be reset
-                    if (properties[propertyName].PropertyType == typeof(bool))
-                        properties[propertyName].SetValue(options, true);
-
-                    continue;
-                }
-
-                if (setProperty && properties.ContainsKey(propertyName))
+                if (properties.ContainsKey(propertyName))
                 {
                     if (Mappers.ContainsKey(propertyName))
-                        Mappers[propertyName].Set(options, value);
+                        Mappers[propertyName].Set(options, parameter.Value);
 
-                    else properties[propertyName].SetValue(options, TypeDescriptor.GetConverter(properties[propertyName].PropertyType).ConvertFromString(value));
-
-                    setProperty = false;
-                    continue;
+                    else properties[propertyName].SetValue(options, parameter.Read(properties[propertyName].PropertyType));
                 }
             }
 
