@@ -111,4 +111,4 @@ Clizby is, at least for my purposes, functionally complete (you'll notice that I
 > ### Parting thoughts ###
 > This is still a personal project and pretty much 100% of all development on it is driven by dogfooding. Of course, my needs are limited to things that *I* want to do, so if there's something missing and you just can't believe I haven't added it yet, feel free to tell me. :)
 >
-> Also, for an example of some heavy dogfooding, check out [HashServer](https://github.com/archer884/HashServer), a project designed to help me stop wasting room on my file server (and, apparently, as a test of just how far I can push Clizby's design without totally screwing everything up).
+> Also, for an example of some heavy dogfooding, check out [HashServer](https://github.com/archer884/HashServer), a project designed to help me stop wasting room on my file server (and, apparently, as a test of just how far I can push Clizby's design without totally screwing everything up). The cool part is [here](https://github.com/archer884/HashServer/blob/master/HashServer/HashServerConfig.cs).
