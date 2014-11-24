@@ -40,15 +40,26 @@ namespace JA.Clizby
 
         /// <summary>
         /// Parses command line options, returning a new instance of T
-        /// containing the processed arguments.
+        /// containing the processed arguments
         /// </summary>
-        /// <typeparam name="T">Type to be created.</typeparam>
-        /// <param name="argsCollection">Arguments to be processed.</param>
+        /// <param name="argsCollection">Arguments to be processed</param>
         /// <returns>Instance of T</returns>
         public T Parse(IEnumerable<string> argsCollection)
         {
+            return Parse(new T(), argsCollection);
+        }
+
+        /// <summary>
+        /// Parses command line options, returning the provided instance of T
+        /// containing the processed arguments.
+        /// </summary>
+        /// <param name="options">The instance of T to be configured</param>
+        /// <param name="argsCollection">The arguments to be processed</param>
+        /// <returns></returns>
+        public T Parse(T options, IEnumerable<string> argsCollection)
+        {
             var properties = typeof(T).GetProperties().ToDictionary(p => p.Name);
-            var options = ApplyPositionalArguments(new T(), argsCollection);
+            ApplyPositionalArguments(options, argsCollection);
 
             var parameters = argsCollection
                 .Zip(argsCollection.Skip(1).Concat(new[] { String.Empty }), (a, b) => new { a, b })
