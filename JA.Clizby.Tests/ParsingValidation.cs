@@ -151,17 +151,14 @@ namespace JA.Clizby.Tests
             var args = new[] { "-n", "Max", "-name", "Tom", "-greet", "-names", "Bob" };
             HelloWorldOptions options = null;
 
-            Assert.DoesNotThrow(() =>
+            options = new OptionReader<HelloWorldOptions>(new HelloWorldOptionsCustomNameMapper())
             {
-                options = new OptionReader<HelloWorldOptions>(new HelloWorldOptionsCustomNameMapper())
-                {
-                    Aliases = new Dictionary<string, string>() 
+                Aliases = new Dictionary<string, string>() 
                     { 
                         { "name", "names" },
                         { "n", "names" },
                     }
-                }.Parse(args);
-            });
+            }.Parse(args);
 
             Assert.Equal(3, options.Names.Count());
             Assert.True(new[] { "Max", "Tom", "Bob" }.SequenceEqual(options.Names));
@@ -175,10 +172,23 @@ namespace JA.Clizby.Tests
             HelloWorldOptionsWithAliases options = null;
             OptionReader<HelloWorldOptionsWithAliases> reader = new OptionReader<HelloWorldOptionsWithAliases>(new HelloWorldOptionsWithAliasesCustomNameMapper());
 
-            Assert.DoesNotThrow(() =>
-            {
-                options = reader.Parse(args);
-            });
+            options = reader.Parse(args);
+
+            Assert.Equal(3, reader.Aliases.Count);
+            Assert.Equal(3, options.Names.Count());
+            Assert.True(new[] { "Max", "Tom", "Bob" }.SequenceEqual(options.Names));
+            Assert.True(options.Greet);
+        }
+
+        [Fact]
+        public void Test013_EnumerableMapperWorks()
+        {
+            HelloWorldOptionsWithAliases options = null;
+            var args = new[] { "-n", "Max", "-name", "Tom", "-groot", "-names", "Bob" };
+            var nameMapper = new EnumerableMapper<HelloWorldOptionsWithAliases, IEnumerable<string>, string>(o => o.Names);
+            var reader = new OptionReader<HelloWorldOptionsWithAliases>(nameMapper);
+
+            options = reader.Parse(args);
 
             Assert.Equal(3, reader.Aliases.Count);
             Assert.Equal(3, options.Names.Count());
